@@ -205,7 +205,7 @@ export const fillPost = (posts) => ({
 1) Posts - actions.js
 - обьеденим все сушьности в один обьект
 
-<h2>тоисть с </h2>
+<h2>то есть </h2>
 
 export const fillPost = (posts) => ({
     type:    types.FILL_POST,
