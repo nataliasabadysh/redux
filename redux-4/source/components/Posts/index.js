@@ -12,14 +12,17 @@ import { mockedProfile } from '../../instruments/mockedData';
 import { Composer, Catcher, Post } from '../../components';
 
 // Action
-import { fatchPostAsync, createPostAsync } from '../../bus/posts/actions';
+import { postActions } from '../../bus/posts/actions';
 
 const mSTP = (state) => ({
     posts: state.posts,
 });
 
 const mDTP = (dispatch) => ({
-    actions: bindActionCreators({ fatchPostAsync, createPostAsync }, dispatch),
+    actions: bindActionCreators({
+        fatchPostAsync:  postActions.fetchPostAsync,
+        createPostAsync: postActions.createPostAsync,
+    }, dispatch),
 });
 
 @connect(mSTP, mDTP)
