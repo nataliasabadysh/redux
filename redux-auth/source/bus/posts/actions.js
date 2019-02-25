@@ -1,25 +1,33 @@
-// Types
+//Types
 import { types } from './types';
 
-export const postActions = {
-    fillPost: (posts) => ({
-        type:    types.FILL_POST,
-        payload: posts, // привязываем данные о постах
+//Instruments
 
-    }),
-    createPost: (posts) => ({
-        type:    types.CREATE_POST,
-        payload: posts, //  данные о посте
-    }),
+export const postsActions = {
+    fillPosts: (posts) => {
+        return {
+            type:    types.FILL_POSTS,
+            payload: posts,
+        };
+    },
 
-    fetchPostAsync: () => ({
-        type: types.FETCH_POST_ASYNC,
-    }),
+    createPost: (post) => {
+        return {
+            type:    types.CREATE_POSTS,
+            payload: post,
+        };
+    },
 
-    createPostAsync: (comment) => ({
-        type:    types.CREATE_POST_ASYNC,
-        payload: comment, // доступ к тексту
-    }),
+    fetchPostsAsync: () => {
+        return {
+            type: types.FETCH_POSTS_ASYNC,
+        };
+    },
 
-
+    createPostAsync: (comment) => {
+        return {
+            type:    types.CREATE_POST_ASYNC,
+            payload: comment,
+        };
+    },
 };

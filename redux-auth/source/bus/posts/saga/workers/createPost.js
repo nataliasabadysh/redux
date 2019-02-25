@@ -1,25 +1,26 @@
-// Core
+//Core
 import { put, apply } from 'redux-saga/effects';
-// Indtruments
+
+//Instruments
 import { api } from '../../../../REST';
-import { postActions } from '../../actions';
-import { uiAtions } from '../../../ui/actions';
+import { postsActions } from '../../actions';
+import { uiActions } from '../../../ui/actions';
 
 export function* createPost ({ payload: comment }) {
     try {
-        yield put(uiAtions.startFetching());
-
-        const response =  yield apply(api, api.posts.create, [comment]);
-        const { data: post, message } =    yield apply(response, response.json);
+        yield put(uiActions.startFetching());
+        const response = yield apply(api, api.posts.create, [comment]);
+        const { data: post, message } = yield apply(response, response.json);
 
         if (response.status !== 200) {
             throw new Error(message);
         }
-        yield put(postActions.createPost(post));
-    } catch (error) {
-        yield put(uiAtions.emitError(error, 'CreatePost worker'))
 
+        yield put(postsActions.createPost(post));
+
+    } catch (error) {
+        yield put(uiActions.emitError(error, '-> createPost worker'));
     } finally {
-        yield put(uiAtions.stopFetching());
+        yield put(uiActions.stopFetching());
     }
 }

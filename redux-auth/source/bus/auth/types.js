@@ -1,8 +1,7 @@
 export const types = {
-    // Sync
+    //Sync
     AUTHENTICATE: 'AUTHENTICATE',
-    // Async
-    SINGUP_ASYNC: 'SINGUP_ASYNC',
-
-    LOGIN_ASYNC: 'LOGIN_ASYNC',
+    //Async
+    SIGNUP_ASYNC: 'SIGNUP_ASYNC',
+    LOGIN_ASYNC:  'LOGIN_ASYNC',
 };

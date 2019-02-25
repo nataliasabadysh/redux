@@ -1,20 +1,26 @@
-// Types
+//Types
 import { types } from './types';
 
 export const authActions = {
-    // Sync
-    authenticate: () => ({
-        type: types.AUTHENTICATE,
-    }),
+    //Sync
+    authenticate: () => {
+        return {
+            type: types.AUTHENTICATE,
+        };
+    },
 
-    // Async
-    signupAsync: (userData) => ({
-        type:    types.SINGUP_ASYNC,
-        payload: userData,
-    }),
-
-    loginSaync: (credentials) => ({
-        type:    types.LOGIN_ASYNC,
-        payload: credentials,
-    }),
-};
+    //Async
+    signupAsync: (userData) => {
+        return {
+            type:    types.SIGNUP_ASYNC,
+            payload: userData,
+        };
+    },
+    loginAsync: (credentials) => {
+        return {
+            type:    types.LOGIN_ASYNC,
+            payload: credentials,
+        };
+    },
+}
+;

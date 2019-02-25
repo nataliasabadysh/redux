@@ -1,7 +1,6 @@
-// Core
+//Core
 import { Map } from 'immutable';
-
-// Types
+//Types
 import { types } from './types';
 
 const initialState = Map({
@@ -10,9 +9,11 @@ const initialState = Map({
 
 export const authReducer = (state = initialState, action) => {
     switch (action.type) {
-        case types.AUTHENTICATE: 
+        case types.AUTHENTICATE:
             return state.set('isAuthenticated', true);
+
         default:
             return state;
     }
-};
+}
+;

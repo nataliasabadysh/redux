@@ -10,8 +10,8 @@ import Styles from './styles.m.css';
 // Components
 import { Composer, Catcher, Post } from '../../components';
 
-// Action
-import { postActions } from '../../bus/posts/actions';
+//Actions
+import { postsActions } from '../../bus/posts/actions';
 
 const mSTP = (state) => ({
     posts:   state.posts,
@@ -20,25 +20,25 @@ const mSTP = (state) => ({
 
 const mDTP = (dispatch) => ({
     actions: bindActionCreators({
-        fatchPostAsync:  postActions.fetchPostAsync,
-        createPostAsync: postActions.createPostAsync,
-    }, dispatch),
+        fetchPostsAsync: postsActions.fetchPostsAsync,
+        createPostAsync: postsActions.createPostAsync },
+    dispatch),
+
 });
 
 @connect(mSTP, mDTP)
-
 export default class Posts extends Component {
+
     componentDidMount () {
         const { actions } = this.props;
 
-        console.log('this action: ', this.props);
-        actions.fatchPostAsync(); // get list of post
+        actions.fetchPostsAsync();
     }
 
     render () {
         const { actions, posts, profile } = this.props;
 
-        const postsJSX = posts.map((post) => { // list
+        const postsJSX = posts.map((post) => {
             return (
                 <Catcher key = { post.get('id') }>
                     <Post

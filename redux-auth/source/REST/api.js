@@ -1,5 +1,5 @@
-// Instruments
-import { MAIN_URL, groupId } from './config';
+//Instruments
+import { groupId, MAIN_URL } from './config';
 
 export const api = {
     auth: {
@@ -9,7 +9,7 @@ export const api = {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(userInfo),   // ({userInfo}) -?
+                body: JSON.stringify(userInfo),
             });
         },
         login (credentials) {
@@ -22,7 +22,6 @@ export const api = {
             });
         },
     },
-
     posts: {
         fetch () {
             return fetch(`${MAIN_URL}/feed`, {
@@ -30,7 +29,6 @@ export const api = {
                 headers: {
                     'x-no-auth': groupId,
                 },
-
             });
         },
         create (comment) {
@@ -45,5 +43,3 @@ export const api = {
         },
     },
 };
-
-// GET - https://lab.lectrum.io/docs/redux/

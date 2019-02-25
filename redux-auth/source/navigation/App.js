@@ -2,12 +2,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { hot } from 'react-hot-loader';
-
-import { Switch, Redirect, Route, withRouter } from 'react-router-dom';
+import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 
 // Pages
-import { Feed, Login, Signup, Profile, NewPassword } from '../pages';
+import { Login, Signup, Feed, Profile, NewPassword } from '../pages';
 
+//Instruments
 import { book } from './book';
 
 const mapStateToProps = (state) => ({
@@ -24,9 +24,9 @@ export default class App extends Component {
 
         return isAuthenticated ? (
             <Switch>
+                <Route component = { Feed } path = { book.feed } />
                 <Route component = { Profile } path = { book.profile } />
                 <Route component = { NewPassword } path = { book.newPassword } />
-                <Route component = { Feed } path = { book.feed } />
                 <Redirect to = { book.feed } />
             </Switch>
         ) : (

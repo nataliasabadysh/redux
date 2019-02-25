@@ -13,6 +13,7 @@ export default class Composer extends Component {
         this._createPost(formData);
         actions.resetForm();
     };
+
     _createPost = ({ comment }) => {
         if (!comment) {
             return null;

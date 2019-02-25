@@ -8,20 +8,21 @@ import cx from 'classnames';
 import Styles from './styles.m.css';
 import { login } from '../../bus/forms/shapes';
 
-// Actions
+//Actions
 import { authActions } from '../../bus/auth/actions';
 
-const mapStateToProps = (state) => ({
+const mSTP = (state) => ({
     isFetching: state.ui.get('isFetching'),
 });
 
-const mapDispatchToProps = {
+const mDTP = {
     loginAsync: authActions.loginAsync,
 };
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(mSTP, mDTP)
 
 export default class LoginForm extends Component {
+
     _submitLoginForm = (credentials) => {
         this.props.loginAsync(credentials);
     };

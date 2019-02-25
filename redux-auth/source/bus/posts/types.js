@@ -1,9 +1,9 @@
 export const types = {
-// Sync - actions
-    FILL_POST:   'FILL_POST',
-    CREATE_POST: 'CREATE_POST',
+    //Sync
+    FILL_POSTS:   'FILL_POSTS',
+    CREATE_POSTS: 'CREATE_POSTS',
 
-    // Async - actions
-    FETCH_POST_ASYNC:  'FETCH_POST_ASYNC',
+    //Async
+    FETCH_POSTS_ASYNC: 'FETCH_POSTS_ASYNC',
     CREATE_POST_ASYNC: 'CREATE_POST_ASYNC',
 };

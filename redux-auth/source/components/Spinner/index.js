@@ -5,12 +5,11 @@ import { connect } from 'react-redux';
 // Instruments
 import Styles from './styles.m.css';
 
-const mapStateToProps = (state) => ({
+const mSTP = (state) => ({
     isFetching: state.ui.get('isFetching'),
 });
 
-@connect(mapStateToProps)
-
+@connect(mSTP)
 export default class Spinner extends Component {
 
     render () {

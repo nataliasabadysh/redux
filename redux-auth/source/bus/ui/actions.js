@@ -1,18 +1,24 @@
-// Types
+//Types
 import { types } from './types';
 
-export const uiAtions = {
-    startFetching: () => ({
-        type: types.START_FETCHING, // on спиннер
-    }),
-    stopFetching: () => ({
-        type: types.STOP_FETCHING, // off спиннер
-    }),
-    emitError: (error, meta = null) => ({
-        type:    types.EMIT_ERROR,
-        payload: error,
-        error:   true,
-        meta,
-    }),
-
-};
+export const uiActions = {
+    startFetching: () => {
+        return {
+            type: types.START_FETCHING,
+        };
+    },
+    stopFetching: () => {
+        return {
+            type: types.STOP_FETCHING,
+        };
+    },
+    emitError: (error, meta = null) => {
+        return {
+            type:    types.EMIT_ERROR,
+            payload: error,
+            error:   true,
+            meta,
+        };
+    },
+}
+;

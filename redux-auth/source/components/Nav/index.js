@@ -8,13 +8,12 @@ import cx from 'classnames';
 import Styles from './styles.m.css';
 import { book } from '../../navigation/book';
 
-const mapStateToProps = (state) => ({
+const mSTP = (state) => ({
     isAuthenticated: state.auth.get('isAuthenticated'),
     profile:         state.profile,
 });
 
-@connect(mapStateToProps)
-
+@connect(mSTP)
 export default class Nav extends Component {
     static defaultProps = {
         // State

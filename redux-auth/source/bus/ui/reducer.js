@@ -1,7 +1,6 @@
-// Core
+//Core
 import { Map } from 'immutable';
-
-// Types
+//Types
 import { types } from './types';
 
 const initialState = Map({
@@ -9,14 +8,13 @@ const initialState = Map({
 });
 
 export const uiReducer = (state = initialState, action) => {
-    switch (action.types) {
+    switch (action.type) {
         case types.START_FETCHING:
             return state.set('isFetching', true);
-
         case types.STOP_FETCHING:
             return state.set('isFetching', false);
-
         default:
             return state;
     }
-};
+}
+;

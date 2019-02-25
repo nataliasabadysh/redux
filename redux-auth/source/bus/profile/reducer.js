@@ -1,7 +1,6 @@
-// Core
+//Core
 import { Map } from 'immutable';
-
-// Types
+//Types
 import { types } from './types';
 
 const initialState = Map({
@@ -16,7 +15,9 @@ export const profileReducer = (state = initialState, action) => {
     switch (action.type) {
         case types.FILL_PROFILE:
             return state.merge(action.payload);
+
         default:
             return state;
     }
-};
+}
+;
