@@ -70,7 +70,7 @@ export default class LoginForm extends Component {
                                     />
                                     <label className = { Styles.rememberMe }>
                                         <Field checked = { props.values.remember } name = 'remember' type = 'checkbox' />
-                                        Запомнить меня
+                                        Keep me signed in.
                                     </label>
                                     <button className = { buttonStyle } disabled = { isFetching } type = 'submit'>
                                         {buttonMessage}

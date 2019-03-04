@@ -21,7 +21,8 @@ const mSTP = (state) => ({
 const mDTP = (dispatch) => ({
     actions: bindActionCreators({
         fetchPostsAsync: postsActions.fetchPostsAsync,
-        createPostAsync: postsActions.createPostAsync },
+        createPostAsync: postsActions.createPostAsync,
+        removePostAsync: postsActions.removePostAsync},
     dispatch),
 
 });

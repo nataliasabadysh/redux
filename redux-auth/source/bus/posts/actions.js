@@ -4,30 +4,39 @@ import { types } from './types';
 //Instruments
 
 export const postsActions = {
-    fillPosts: (posts) => {
-        return {
+
+    // Sync
+    fillPosts: (posts) => ({
             type:    types.FILL_POSTS,
             payload: posts,
-        };
-    },
+    }),
 
-    createPost: (post) => {
-        return {
-            type:    types.CREATE_POSTS,
-            payload: post,
-        };
-    },
+    createPost: (post) => ({
+        type:    types.CREATE_POSTS,
+        payload: post,
+    }),
 
-    fetchPostsAsync: () => {
-        return {
-            type: types.FETCH_POSTS_ASYNC,
-        };
-    },
+    clearPost: () => ({
+        type:    types.CLEAR_POSTS,
+    }), 
 
-    createPostAsync: (comment) => {
-        return {
-            type:    types.CREATE_POST_ASYNC,
-            payload: comment,
-        };
-    },
+    removePost: (id)=> ({
+        type:    types.DELETE_POST,
+        payload: id,
+    }),
+
+    // Async
+    fetchPostsAsync: () => ({
+        type: types.FETCH_POSTS_ASYNC,
+    }),
+
+    createPostAsync: (comment) => ({
+        type:    types.CREATE_POST_ASYNC,
+        payload: comment,
+    }),
+
+    removePostAsync: (id) =>({
+        type:    types.DELETE_POST_ASYNC,
+        payload: id,
+    })
 };

@@ -8,19 +8,26 @@ import cx from 'classnames';
 import Styles from './styles.m.css';
 import { book } from '../../navigation/book';
 
+// Actions
+import { authActions } from '../../bus/auth/actions';
+
+
 const mSTP = (state) => ({
     isAuthenticated: state.auth.get('isAuthenticated'),
     profile:         state.profile,
 });
+const mDTP = {
+    logoutAsync:authActions.loginAsync,
+}
 
-@connect(mSTP)
+@connect(mSTP, mDTP)
 export default class Nav extends Component {
     static defaultProps = {
         // State
         isOnline: false,
 
         // Actions
-        logoutAsync: () => {},
+       //  logoutAsync: () => {},
     };
 
     _getNav = () => {
@@ -34,22 +41,22 @@ export default class Nav extends Component {
                         {profile.get('firstName')}
                     </NavLink>
                     <NavLink activeClassName = { Styles.active } to = { book.feed }>
-                        Стена
+                        Feed
                     </NavLink>
                 </div>
-                <button onClick = { this._logout }>Выйти</button>
+                <button onClick = { this._logout }>Logout</button>
             </>
             :
             <>
                 <div>
                     <NavLink activeClassName = { Styles.active } to = { book.login }>
-                        Войти
+                        Sing in
                     </NavLink>
                     <NavLink activeClassName = { Styles.active } to = { book.signUp }>
-                        Создать аккаунт
+                        New account
                     </NavLink>
                 </div>
-                <button className = { Styles.hidden }>Выйти</button>
+                <button className = { Styles.hidden }>Logout</button>
             </>
         ;
     };
@@ -62,6 +69,7 @@ export default class Nav extends Component {
         const { isOnline } = this.props;
 
         const navigation = this._getNav();
+        
         const statusStyle = cx(Styles.status, {
             [Styles.online]:  isOnline,
             [Styles.offline]: !isOnline,
@@ -70,7 +78,7 @@ export default class Nav extends Component {
         return (
             <section className = { Styles.navigation }>
                 <div className = { statusStyle }>
-                    <div>{isOnline ? 'Онлайн' : 'Офлайн'}</div>
+                    <div>{isOnline ? 'Online' : 'Offline'}</div>
                     <span />
                 </div>
                 {navigation}

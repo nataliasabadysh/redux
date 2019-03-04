@@ -17,6 +17,11 @@ export function* login ({ payload : credentials }) {
         if (response.status !== 200) {
             throw new Error(message);
         }
+        // for cjkeckbox "Keep me signed in"
+        if (credentials.remember) {
+            yield apply(localStorage, localStorage.setItem['remember', true]);  //после получения профайла логин пользователя
+        }
+        yield apply(localStorage, localStorage.setItem['token', profile.token]); //после получения профайла логин пользователя
 
         yield put(profileActions.fillProfile(profile));
         yield put(authActions.authenticate());

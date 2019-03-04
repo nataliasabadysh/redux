@@ -1,415 +1,470 @@
-№ 6
-# Маршрутизация в Redux + auth from state 
+# Private.js  Route
 
-# App.js
-<p> import { Switch, Redirect, Route, withRouter } from 'react-router-dom'; </p>
-<p> import { Feed, Login, Signup, Profile, NewPassword } from '../pages'; </p>
-<p> import { book } from './book';</p>
-
-const mapStateToProps = (state) => ({
-    isAuthenticated: state.auth.get('isAuthenticated'),
-});
-
-@withRouter
-@connect(mapStateToProps)
-
-export default class App extends Component {
-    render () {
-        const { isAuthenticated } = this.props;
-
-        return isAuthenticated ? (
-            <Switch>
-                <Route component = { Profile } path = { book.profile } />
-                <Route component = { NewPassword } path = { book.newPassword } />
-                <Route component = { Feed } path = { book.feed } />
-                <Redirect to = { book.feed } />
-            </Switch>
-        ) : (
-            <Switch>
-                <Route component = { Login } path = { book.login } />
-                <Route component = { Signup } path = { book.signUp } />
-                <Redirect to = { book.login } />
-            </Switch>
-        );
-    }
-}
-
-- privet / poblic routes, (isAuthenticated true/false)
-
-* Book.js
-export const book = Object.freeze({
-    login:       '/login',
-    signUp:      '/sign-up',
-    feed:        '/feed',
-});
-
-# Nav.js  - Component
-
-const mapStateToProps = (state) => ({
-    isAuthenticated: state.auth.get('isAuthenticated'),
-    profile:         state.profile,
-});
-
-@connect(mapStateToProps)
-export default class Nav extends Component {
-    ..
-    _getNav = () => {
-        const { isAuthenticated, profile } = this.props;
-
-        return isAuthenticated ?
-            <>
-                <div>
-                    <NavLink activeClassName = { Styles.active } to = { book.profile }>
-                        <img src = { profile.get('avatar') } />
-                        {profile.get('firstName')}
-                    </NavLink>
-                    <NavLink activeClassName = { Styles.active } to = { book.feed }>
-                        Стена
-                    </NavLink>
-                </div>
-                <button onClick = { this._logout }>Выйти</button>
-            </>
-            :
-            <>
-                <div>
-                    <NavLink activeClassName = { Styles.active } to = { book.login }>
-                        Войти
-                    </NavLink>
-                    <NavLink activeClassName = { Styles.active } to = { book.signUp }>
-                        Создать аккаунт
-                    </NavLink>
-                </div>
-                <button className = { Styles.hidden }>Выйти</button>
-            </>
-        ;
-    };
-    render () {
-        const navigation = this._getNav();
-
-        return (
-            <section className = { Styles.navigation }>
-                {navigation}
-            </section>
-        );
-    }
-
-
-
-# Public / Privet Routes   Сделаем на redux- saga " isAuthenticated " 
-
-
-
-
-# auth 
-1) types
-<p>
-export const types = {
-    AUTHENTICATE: 'AUTHENTICATE', //  для reducer  ( true/ false )
-    SINGUP_ASYNC: 'SINGUP_ASYNC', // for Saga - watcher -> to worker
-    LOGIN_ASYNC: 'LOGIN_ASYNC', };
-</p>
-
-
-
-
-2) action
-
-export const authActions = {
-    authenticate: () => ({
-        type: types.AUTHENTICATE,
-    }),
-
-    singupAsync: (userData) => ({
-        type:    types.SINGUP_ASYNC,
-        payloda: userData,
-    }),
-};
-* Эти данные мы отправим на сервер для регестрации
-
-3) reducer 
-
-import { Map } from 'immutable';
-import { types } from './types';
-
-const initialState = Map({
-    isAuthenticated: false,
-});
-export const authReducer = (state = initialState, action) => {
-    switch (action.type) {
-        case types.AUTHENTICATE: 
-            return state.set('isAuthenticated', true);
-       ..
-    }
-};
-4) roodReducer
-
-import { authReducer as auth } from '../auth/reducer';
-export const rootReducer = combineReducers({
-    auth,  < ----   
-    ui,
-    posts,
-});
-5) В Компонент
-
-import { connect } from 'react-redux';
-
-const mapStateToProps = (state) => ({
-    isAuthenticated: state.auth.get('isAuthenticated'),
-});
-
-@connect(mapStateToProps)
-
-* Ткпкрь нам больше не нужна заглишка , теперь доступно с состояния isAuthenticated: true,
-
-    static defaultProps = {
-        // State
-        profile:         mockedProfile,
-        isAuthenticated: true,  <  ---- удаляем 
-        isOnline:        false,
-
-        // Actions
-        logoutAsync: () => {},
-    };
-
-# @connect - блокирует роуты если применить в App.js  (баг)
- withRouter - поможет решить этот вопрос 
-
+// Core
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-
-import { Switch, Redirect, Route, withRouter } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 // Pages
-import { Feed, Login, Signup, Profile, NewPassword } from '../pages';
+import { Feed, Profile, NewPassword } from '../pages';
 
+//Instruments
 import { book } from './book';
 
-@withRouter
-@connect()
-
-- теперь райты работают 
-- connetc подключем 
-- и мы получаем доступ к приватным и публичным роутам 
-
-# privet/ public routes
-export default class App extends Component {
+export default class Private extends Component {
     render () {
-        const { isAuthenticated } = this.props;
-
-        return isAuthenticated ? (
+        return  (
             <Switch>
+                <Route component = { Feed } path = { book.feed } />
                 <Route component = { Profile } path = { book.profile } />
                 <Route component = { NewPassword } path = { book.newPassword } />
-                <Route component = { Feed } path = { book.feed } />
                 <Redirect to = { book.feed } />
             </Switch>
-        ) : (
+        ) 
+    }
+}
+
+
+# Public.js
+// Core
+import React, { Component } from 'react';
+import { Switch, Route, Redirect } from 'react-router-dom';
+
+// Pages
+import { Login, Signup } from '../pages';
+
+//Instruments
+import { book } from './book';
+
+export default class Public extends Component {
+    render () {
+        return (
             <Switch>
                 <Route component = { Login } path = { book.login } />
                 <Route component = { Signup } path = { book.signUp } />
                 <Redirect to = { book.login } />
             </Switch>
-        );
+        )
     }
-}
-# регестрация пользователя  - видео 3
+};
 
-- Formik 
-    - signupAsync
-    - authActions
-    - 
-
-# SignupForm.js
-
-у нас есть 
-
-    static defaultProps = {
-        // State
-        isFetching: false,
-
-        // Actions
-        signupAsync: () => {},
-    };
-Заменим , привязав попрос с redux  signupAsync /  isFetching
-
-+ isFetching
+# App.js
+// Core
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { hot } from 'react-hot-loader';
+import { withRouter } from 'react-router-dom';
+
+// Routes
+import Private from './Private';
+import Public from './Public';
 
 const mapStateToProps = (state) => ({
-    isFetching: state.ui.get('isFetching'),
+    isAuthenticated: state.auth.get('isAuthenticated'),
 });
 
-+ actions
-import { authActions } from '../../bus/auth/actions';
+@hot(module)
+@withRouter
+@connect(mapStateToProps)
 
-const mapDispatchToProps = {
-    signupAsync: authActions.signupAsync,
-};
+export default class App extends Component {
+    render () {
+        const { isAuthenticated } = this.props;
 
-* mapDispatchToProps 
--  используем в виде obj а не фун-ю 
-- если нам не нужно вкладиввать во вложенный обькт  
-
-
-# saga + регестрация пользователя  
-# Нужно отправить запрос 
-# watcher.js
-
-function* watchSignup () {
-    yield takeEvery(types.SINGUP_ASYNC, signup);
+        return isAuthenticated ? <Private /> : <Public />;
+    }
 }
+# jwt token - сохраним в localStorage
 
-export function* watchAuth () {
-    yield all([
-        call(watchSignup)
-    ]);
-}
-* будем следить за action "SINGUP_ASYNC" - которая запускаеться в signupForm 
+in LS-после получения профайла логин пользователя
 
-* new worker signup
+  localStorage.setItem('token', profile.token); 
 
-# rootSaga.js
+// http://prntscr.com/mpuhbo
 
-import { watchAuth } from '../../bus/auth/saga/watcher';
+перепишим на saga
+yield apply(localStorage.setItem['token', profile.token]);
 
-export function* rootSaga () {
-    yield all([.., call(watchAuth)]);
-}
+// http://prntscr.com/mpuivc
 
-# hhtp api 
-DOC Baackend  https://lab.lectrum.io/docs/redux/
-POST
-https://lab.lectrum.io/redux/api/user/{groupId}
++ API
 
-URI parameters  - groupId
-Body:           - это obj при отправки form signup
-Example value: {
-  "firstName": "Jon",
-  "lastName": "Doe",
-  "email": "j.doe@example.com",
-  "password": "abc123456ABC",
-  "invite": "abc1234567"
-}
-
-# api
-
+    get token(){
+        return localStorage.setItem('token'); 
+    },
     auth: {
-        signup (userInfo) {
-            return fetch(`${MAIN_URL}/user/${groupId}`, {
+        ...
+        authenticate () {
+            return fetch(`${MAIN_URL}/user/login`, {
                 method:  'POST',
                 headers: {
-                    'Content-Type': 'application/json', // comment to json
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ userInfo }),
+                body: JSON.stringify({ token: this.token }),
             });
         },
-    },
+    }
 
-# worker.js (signup.js)
++ Для вызова воркер сага
 
-import { api } from '../../../../REST';
-import { authActions } from '../../../auth/actions';
-import { uiActions } from '../../../ui/actions';
+AUTHENTICATE_ASYNC: 'AUTHENTICATE_ASYNC',
+
+authenticateAsync: () => ({
+    type: types.AUTHENTICATE_ASYNC,
+}),
++ worker
+
+..
 
 
-export function* worker ({ payload: userInfo }) {
+    export function* authenticate () {
+
     try {
         yield put(uiActions.startFetching());
-        yield put(authActions.authenticate());
 
-        const response =  yield apply(api, api.auth.signup, [userInfo]);
+        const response = yield apply(api, api.auth.authenticate);
         const { data: profile, message } = yield apply(response, response.json);
 
-        if (response.status !== 200) { throw new Error(message);}
-    } catch (error) {
-        yield put(uiActions.emitError(error, 'Singup worker'));
-
-    } finally {
-        yield put(uiActions.stopFetching());
-    }
-}
-
-
-
-
-# PROFILE
-export const types = {
-    FILL_PROFILE: 'FILL_PROFILE',
-}
-
-export const profileActions = {
-    fillProfile: (profile) => ({
-        type:    types.FILL_PROFILE,
-        payload: profile,               <--- profile 
-    }),
-};
-3) profileReducer
-
-const initialState = Map({
-    id:        '',
-    firstName: '',
-    lastName:  '',
-    avatar:    '',
-    token:     '',
-});
-
-export const profileReducer = (state = initialState, action) => {
-    switch (action.types) {
-        case types.FILL_PROFILE: 
-            return state.merge(action.payload);
-        default:
-            return state;
-    }
-};
-
-4) rootReducer
-import { profileReducer as profile } from '../profile/reducer';
-
-export const rootReducer = combineReducers({
-    auth,
-    ui,
-    posts,
-    profile,
-});
-
-5) signup.js ( worker saga)
-import { profileActions } from '../../../profile/actions';
-
+        if (response.status !== 200) {
+            throw new Error(message);
+        }
+        yield apply(localStorage.setItem['token', profile.token]); 
 
         yield put(profileActions.fillProfile(profile));
-- Этот action загрузит настоящме данные о профиля пользователя в редах 
-6) Компонент - Composer  - плучает данные по пропам от Posts 
+        yield put(authActions.authenticate());
 
-В
- - Posts.js
- - Nav.js 
- 
+..
+}
++ watcher Saga
+export function* watchAuthenticate () {
+    yield takeEvery(types.AUTHENTICATE_ASYNC, authenticate);
+}
+ App.js
+
+import { authActions } from '../bus/auth/actions'; /// Actions
+
 const mSTP = (state) => ({
-    ... 
-    profile: state.posts,  < --- 
+    isAuthenticated: state.auth.get('isAuthenticated'),
+});
+const mDTP = {
+    authenticateAsync: authActions.authenticateAsync,
+};
+
+   componentDidMount () {
+        this.props.authenticateAsync();
+    }
+<h1>Добавим при ассихнронный загрузки спинер 😀😀</h1>
+
+# доп инициализация . уберем мертвую точку  (4 - видео)
+
+между отправкой запроса на authenticateAsync и плучения (любого) ответа от сервера 
+
+Хорошо это видно при медленном интернете 
+Добавим доп шаг к инициализации 
+
+# App.js
+import { Loading } from '../components';
+
+        const isInitialized = false;
+
+          if (!isInitialized) {
+            return <Loading />;
+        }
+** когда isInitialized = true отрендериться все приложение 
+Реализуем поведение 
+1)
+ auth
+    types.js
+            INITIALIZE: 'INITIALIZE',
+            INITIALIZE_ASYNC: 'INITIALIZE_ASYNC',
+
+    action.js
+            initializeAsync: () => ({
+                type: types.INITIALIZE_ASYNC,
+            }),
+            initialize: () => ({
+                type: types.INITIALIZE,
+            }),
+
+    reducer.js
+            case types.INITIALIZE:
+                return state.set('isInitialized', true);
+2)
+App.js
+
+const mSTP = (state) => ({
+    isAuthenticated: state.auth.get('isAuthenticated'),
+    isInitialized: state.auth.get('isInitialized')
 });
 
+const mDTP = {
+    // authenticateAsync: authActions.authenticateAsync,
+    initializeAsync: authActions.initializeAsync,
+};
+    componentDidMount () {
+        this.props.initializeAsync(); // authenticateAsync
+    }
+
+render () {
+        const { isAuthenticated, isInitialized } = this.props;
+        if (!isInitialized) { return <Loading />;  }
+3)
+* Обработаем этот акшион новой сагой инициализации *
+worker.js (isInitialized.js)  - authActions_Async - вызовим здесь при инициализации
+
+import { put, apply } from 'redux-saga/effects';
+import { authActions } from '../../../auth/actions';
+
+export function* initialize () {
+
+        const token = yield apply(localStorage, localStorage.getItem, ['token'] );
+        
+        if(token) {   yield put(authActions.authenticateAsync());  }
+        else{         yield put(authActions.initialize());         } 
+};
+
+- если токен есть то делаем authenticateAsync
+- а если нет то initialize приложение (и тем самым убрать экран загрузки )
+4)
+re-export index.js
+export { initialize } from './initialize';
+5)
+Зарегестрируем в watcherSaga 
+
+//Workers
+import { signup, login, authenticate, initialize } from './workers';
+
+export function* watchInitialize () {
+    yield takeEvery(types.INITIALIZE_ASYNC, initialize);
+}
+
+6)
+А если токе не валиный или устарел Нам же в любому случаи нужно выключить спиннер 
+worker.js (authenticate.js)
+..
+finally {
+        yield put(uiActions.stopFetching());
+        yield put(authActions.initialize());  <-- 
+    }
+
+#  Запоминать пользователя между перезагрузкой страницы  по нажатию checkbox -ЗАПОМНИТЬ МЕНЯ  (video - 5 )
+
+   <label>
+   <Field checked = { props.values.remember } name = 'remember'  type = 'checkbox' />  Keep me signed in
+    </label>
+
+login.js - добавим условие , по которому добовляем в  LS 
+
+
+if (credentials.remember) {
+     yield apply(localStorage, localStorage.setItem['remember', true]);  
+        }
+
+Теперь добавим Cчтение из - LS
+
+worker.js (initialize.js)
+
+     const remember = yield apply(localStorage, localStorage.getItem, ['remember'] );
+       
+if(token && remember) {
+        yield put(authActions.authenticateAsync()); }
+ else{  yield put(authActions.initialize()); }
+
+
+* * Попутка authenticate поизойдет при условии этих двух условий 
+1) Пользователь залогинеля на сайте хоть один раз 
+2) в момент логина чекбокс был выбран 
+
+
+api.js - теперь имя и данные пост будут соотвецтвовать
+
+headers: {
+    'Authorization': this.token,
+ },
+
+ # Logout  (v - 6)
+
+<b> Нам нужно сделать изменить isInitialized => false  </b>
+
+1) types
+<p>   LOGOUT: 'LOGOUT', - для обраюотки редьюсером </p>
+<p>   LOGOUT_ASYNC: 'LOGOUT_ASYNC', - для запуска Саги </p>
+
+2) actions
+<p>  logout: () => ({ type: types.LOGOUT, }),  </p>
+<p>  logoutAsync: () => ({ type: types.LOGIN_ASYNC, }),  </p>
+
+3) reducer 
+<p> case types.LOGOUT: return state.set('isAuthenticated', false);  </p>
+
+4) Nav.js
+
+<p>  import { authActions } from '../../bus/auth/actions'; </p>
+<p>  const mDTP = { logoutAsync:authActions.loginAsync,} </p>
+
+<p>  Полученный стейт привязываем к методу в классе , что бы вызвать на кнопке  </p>
+<p>  _logout = () => {  this.props.logoutAsync(); };  </p>
+
+5) API что бы выйти из системы , нужен запрос к серверу 
+
+<p>  
+
+
+    logout () {
+
+    return fetch(`${MAIN_URL}/user/logout`, {
+
+        method:  'GET',
+
+        headers: {  'Authorization': this.token, },
+    });
+},
+
+
+</p>
+
+6) Saga worker logout.js
+
+<p>  
+
+    export function* logout () {
+
+        try {
+
+            yield put(uiActions.startFetching());
+
+            const response = yield apply(api, api.auth.logout );
+
+            if (response.status !== 204) { // status code for Logout 
+                const { message } = yield apply(response, response.json);
+                throw new Error(message);
+            }
+
+        } catch (error) {
+            yield put(uiActions.emitError(error, '-> Logout worker'));
+        } finally {
+            yield put(uiActions.stopFetching());
+            yield put(authActions.logout());
+        }
+    }
+ </p>
+
+- на успешный фетч бэкэнд не присылает ничего в ответ ,
+- но на ошибку !204 то сервер пришлет обькт с полем месседж
+
+- здесь проверяем на ответ от сервера == 204
+
+8) re-expors  -> export { logout } from './logout';
+
+7) watcher.js
+<p> function* watchLogout () { yield takeEvery(types.LOGOUT_ASYNC, logout);   } </p>
+
+#  logout- мы вышли, а стейт остался с постами и данными  ( state = LS, profile, post )
+
+- Очистим  posts
+
+<p>   CLEAR_POSTS: 'CLEAR_POSTS',   </p>
+<p>  clearPost: () => ({  type: types.CLEAR_POSTS, })  </p>
+<i>  при его запуске вызовим state.clear imutable.js  </i>
+<p>  case types.CLEAR_POSTS: return state.clear();// state - empty   </p>
+
+- Очистим  profile
+
+<p> CLEAR_PROFILE: 'CLEAR_PROFILE',  </p>
+<p> clearProfile: () => ({  type: types.CLEAR_PROFILE, }) </p>
+<p> case types.CLEAR_PROFILE: return state.clear(); </p>
+
+- worker logout.js ( for clean LS, profile-action, post-action )
+
+<p>  finally {
+        <p>  yield apply(localStorage, localStorage.removeItem, ['toke']); </p>
+        <p>  yield apply(localStorage, localStorage.removeItem, ['remember']); </p>
+        <p>  yield put(profileActions.clearProfile());  </p>
+        <p>  yield put(postsActions.clearPost());   </p>
+</p>
+
+# react-router-redux  (video-7)
+# для хранения и управления состоянием Routing  in state  Redux
+- предоставляет готовый reducer - routerReducer
+-
+- 
+1)
+
+rootReducer.js
+ import { routerReducer as router } from 'react-router-redux';
+
+export const rootReducer = combineReducers({
+    ..
+    router,
+});
+
+2) create middleware 
+core.js
+import{ createBrowserHistory } from 'history';
+import { routerMiddleware as createRouterMiddleware} from 'react-router-redux'
+
+const history = createBrowserHistory();
+const routerMiddleware = createRouterMiddleware(history);
+
+const middleware = [sagaMiddleware, customThunk, routerMiddleware];
+export { enhancedStore, sagaMiddleware , history };
+
+3) index.js
+import { ConnectedRouter as Router } from 'react-router-redux';
+import { history } from './init/middleware/core';
+
+      <Router history= { history } >
+
+http://prntscr.com/msm8wh  - Console 
+http://prntscr.com/msm983  - Redux state 
+
+
+<h1>Запустим наш action в явном виде </h1>
+
+logout.js
+
+import { replace } from 'react-router-redux';
+import { book } from '../../../../navigation/book';
+
+yield put(replace(book.login));     
+
+*replace  
+- заменит текуший адрес браузера 
+- без возможности сделать шаг назад 
+
+* react-router-redux -Нужен когда нужно сменить роут в глубокой операции приложении
+- очень удобно работать с понятным и распишанными шагами в прмложении 
+
+
+# Token живет 4 часа  (видео-8)
+
+-  работает с устаревшими токенами в приложении (401 - error status)
+-  если статус 401 то очистим  removeItem, ['toke']);  и ['remember']);
+- что бы приложение больше не пыталось аунтефицироваться 
+- return null; для того что бы выйти из блока try 
+
+authenticate.js
+
+
+        if ( response.status !== 200 ) {
+            if ( response.status === 401 ) {
+                yield apply(localStorage, localStorage.removeItem, ['toke']);
+                yield apply(localStorage, localStorage.removeItem, ['remember']);
+
+                return null;
+            }
+            throw new Error(message);
+        }
+
+# deete posts
 
 
 
-# saga method dalay 
 
-import { delay } from 'redux-saga';
-yield delay(2000);
-
-
-isFetching
-
-// Config
-export const ROOT_URL = 'https://lab.lectrum.io';
-export const MAIN_URL = `${ROOT_URL}/redux/api`;
-
-export const groupId = 'algroktvgc9z';
-
-export const invite = 'EgKsIZfkp7mc';
-
-// Для тестов вебсокета: `qmhjqBMeYwhp` ;
-// токен для фейсбука: `EgKsIZfkp7mc`
-// токен для персонального проекта `oZjnbqPdNfU5cft6`
-
-// Web/Api  - https://lab.lectrum.io/docs/redux/#/docs/resources-5-methods-0
+<p>   </p>
+<p>   </p>
+<p>   </p>
+<p>   </p>
+<p>   </p>
+<p>   </p>
+<p>   </p>
+<p>   </p>

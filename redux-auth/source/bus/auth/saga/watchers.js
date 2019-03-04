@@ -5,16 +5,34 @@ import { takeEvery, all, call } from 'redux-saga/effects';
 import { types } from '../types';
 
 //Workers
-import { signup, login } from './workers';
+import { signup, login, authenticate, initialize , logout } from './workers';
 
-export function* watchSignup () {
+function* watchSignup () {
     yield takeEvery(types.SIGNUP_ASYNC, signup);
 }
 
-export function* watchLogin () {
+function* watchLogin () {
     yield takeEvery(types.LOGIN_ASYNC, login);
 }
 
+function* watchAuthenticate () {
+    yield takeEvery(types.AUTHENTICATE_ASYNC, authenticate);
+}
+
+function* watchInitialize () {
+    yield takeEvery(types.INITIALIZE_ASYNC, initialize);
+}
+
+function* watchLogout () {
+    yield takeEvery(types.LOGOUT_ASYNC, logout);
+}
+
 export function* watchAuth () {
-    yield all([call(watchSignup), call(watchLogin)]);
+    yield all([
+        call(watchSignup),
+        call(watchLogin),
+        call(watchAuthenticate),
+        call(watchInitialize),
+        call(watchLogout),
+    ]);
 }
